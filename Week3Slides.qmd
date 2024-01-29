@@ -1,0 +1,231 @@
+---
+title: "Week 3: Organizing Projects/Simulation Studies w/ RStudio \\& Git"
+author: 
+  name: "Isaac Ray"
+  institution: "Texas A\\&M University"
+format: 
+  beamer:
+    include-in-header: 
+      - text: "\\definecolor{TAMUMaroon}{HTML}{500000}"
+      - text: "\\setbeamercolor{palette primary}{bg=TAMUMaroon,fg=white}"
+    theme: metropolis
+    keep-tex: true
+    linkcolor: blue
+editor: visual
+date: today
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+set.seed(12345)
+```
+
+## Admin
+
+-   Second Homework is posted; due Friday at midnight
+-   Grades for Homework 1 posted in Canvas
+-   Covering formatting today, enforced from now onwards
+-   Office hours for homework questions
+
+## Before we begin
+
+-   Please create a [Github](https://github.com) account
+-   Please make sure you have `git` installed (and optionally `github`
+    CLI) 
+-   [**HappyGitWithR**](https://happygitwithr.com) has a detailed guide
+
+## What we'll cover
+
+-   Creating a Quarto project in RStudio
+-   Writing a modular document
+-   Tracking changes with version control software (git)
+-   Collaborating via a remote source (GitHub)
+
+## Creating a Quarto Project
+
+![](new_project.png){fig-align="center"}
+
+## Quarto
+
+-   [Quarto formatting cheat
+    sheet](https://rstudio.github.io/cheatsheets/quarto.pdf)
+-   [Markdown
+    Instructions](https://quarto.org/docs/authoring/markdown-basics.html)
+-   [Hadley on Quarto](https://r4ds.hadley.nz/quarto.html#yaml-header)
+
+## RStudio Projects
+
+-   RStudio projects gives you an organization framework
+-   Supports the 'git' idea - one project, one repository (directory)
+-   Easy integration with GitHub (later)
+-   `.Rproj` file specifies some project settings
+-   Can either make new projects in new directories, or associate a
+    directory with a project
+
+## Git
+
+-   Git is a *version control system* - lets you track progress over
+    time
+
+-   GitHub is a website that integrates with git to serve as a *remote
+    repository source*
+
+```{bash, echo=TRUE}
+git --version
+```
+
+## Git
+
+![](git_xkcd.png){fig-align="center"}
+
+## Git
+
+-   Git is wildly powerful, we do not need all the features it offers
+-   Requires some configuration (esp. for GitHub)
+
+```{bash, echo = TRUE}
+git config --global user.name "Isaac Ray"
+git config --global user.email "null@stat.tamu.edu"
+```
+
+## A few useful commands
+
+```{bash, echo=TRUE, eval=FALSE}
+# Show all files in current working directory
+ls -a
+# Move to a folder in the current directory
+cd name_of_subdirectory
+# Move to the default home folder
+cd ~
+# Move to the parent folder of the current directory
+cd ..
+```
+
+[Short tutorial on navigating files and directories from
+terminal/bash](https://datacarpentry.org/shell-genomics/02-the-filesystem/index.html)
+
+## Git
+
+-   One project, one repository (a directory)
+-   To create a new repository from scratch, move to the desired
+    location and type
+
+```{bash, echo=TRUE, eval=FALSE}
+git init repository_name
+```
+
+-   Try it now using 'PracticeRepo' as the name
+-   Enter the new folder (`cd PracticeRepo`) and look inside (`ls -a`)
+-   Enter `git status` to ensure the repository was initialized
+    successfully
+
+## Git and RStudio Projects
+
+-   When you create an RStudio Project, you have the option to
+    initialize it as a Git repository
+-   For a project in an existing directory, it will pick up if it is a
+    Git repository
+    -   `File -> New Project -> Existing Directory`
+-   The **Git** tab should appear next to **Environment** (top right
+    hand corner)
+    -   If not, try restarting RStudio or go to
+        `Tools -> Global/Project Options -> Git/SVN` and enable
+
+## Git and RStudio Projects
+
+-   Projects will always come with two files, a `.gitignore` and a
+    `.RProj`
+-   `.gitignore` files let you specify certain files that Git
+    **shouldn't track**
+    -   Git is best for plain text; poor for rich formats like PDF
+-   In Git tab, it will show *changed files* (as compared to the blank
+    folder)
+-   Git works on the basis of *commits*
+
+## Using Git for Fun and Profit
+
+[Git Cheat
+Sheet](https://education.github.com/git-cheat-sheet-education.pdf)
+
+Basic Workflow:
+
+1.  **Pull** the version of the repository from the remote source via
+    `git pull`
+2.  **Stage** changes via `git add`
+3.  **Commit** changes via `git commit -m "What this commit does"`
+4.  **Push** changes to the remote source via `git push`
+
+## Git Diagram
+
+![](git_diagram.png){fig-align="center"}
+
+## Git Best Practices
+
+-   Don't nest version controlled repositories! One project, one
+    repository, one `.RProj`, one `.gitignore`
+-   Make *meaningful commits*
+    -   Avoid committing massive chunks at once; break it up into
+        logical units
+    -   Commit logical changes together (unrelated changes go in
+        different commits)
+    -   Only commit complete changes, don't commit half-way
+    -   **Write useful messages**!
+-   A commit message should finish the sentence: "If applied, this
+    commit will *commit message here"*
+    -   If applied, this commit will *update the documentation for
+        function abc*
+    -   If applied, this commit will *fix a bug*
+
+## Git Remote Sources
+
+-   We will use GitHub as a *remote source* for our repositories
+-   Serves as a way of collaborating, cloud backup for files, sharing
+    results, etc.
+-   You've been using it implicitly via
+    `quarto use template rayisaacalan/homework-template`
+
+[GitHub's own introductory
+course](https://lab.github.com/githubtraining/introduction-to-github)
+
+## Using Remote Sources
+
+-   The remote source is considered the current 'true' version of the
+    repository
+-   'Pushing' to the remote source means your committed changes will
+    become 'true'
+-   'Pulling' from the remote source means your local version will
+    update what it thinks is 'true'
+-   What if these conflict?
+-   Easier to avoid writing conflicts if you use
+    [includes](https://quarto.org/docs/authoring/includes.html)
+
+## Using Remote Sources
+
+To set up a remote source for your repository (for branch `main`):
+
+```{bash, echo = TRUE, eval = FALSE}
+git remote add origin url_to_your_github_repo
+git push --set-upstream origin main
+```
+
+Afterwards, you can `git push origin main` or `git pull origin main`. Be
+sure to pull/push your changes *frequently*
+
+## GitHub Repositories
+
+-   Repositories can be public or private; up to you
+-   Public repositories can be cloned or forked
+    -   A fork is a copy of someone else's repository that you can fully
+        control
+    -   Useful for *branch-based development*, beyond the scope of this
+        course
+-   If you have a public repository, be sure to add a license
+
+## Using GitHub within RStudio Project
+
+-   Demo; within the Git tab you will have push/pull options as well as
+    the ability to change remote sources
+-   Easier in the CLI in my opinion, but the GUI option does the same
+    things
+-   Visual commits with highlighting is a nice feature, easy to stage
+    changes
