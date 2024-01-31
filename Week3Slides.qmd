@@ -231,3 +231,168 @@ sure to pull/push your changes *frequently*
     changes
 
 ## Organizing Simulations with Git
+
+-   Recommendation: One function, one file
+-   Requirement: One purpose, one folder
+    -   R functions for data generation, method implementation, metrics
+        (**Functions** folder)
+    -   R scripts to run the simulations (**Simulations** folder);
+        **Output** and **Figures** subfolders for raw output and
+        tables/visuals respectively
+    -   R scripts for real data analysis (**Analysis** folder)
+    -   Folder for raw data (.csv's, binaries, etc.) (**Data** folder)
+-   Optional: **Source** for non-R functions (C, C++, etc), **Testing**
+    for temporary files, etc
+
+## Organization & Reproducibility
+
+-   The code in your GitHub repository should be *clean, readable,
+    documented,* and **reproducible**
+-   If I clone your GitHub repo, open your main .qmd file, and click
+    `Render` :
+    -   I should not get any error messages (don't just suppress
+        everything with `error=FALSE`)
+    -   I should get **exactly** the same output that you do, up to
+        numerical precision
+    -   I should not be required to change any *file paths*
+    -   I should be able to read and intuit the purpose of each file
+
+## Reproducibility problems
+
+You need to use *relative paths* when working within an RStudio project
+(really, you always should!)
+
+```{r bad_example_paths, eval=FALSE, echo=TRUE}
+# Wrong! myCoolFunction is not defined yet
+model_output = myCoolFunction(data)
+# Wrong! Absolute paths will not work on other machines
+source("C:/Users/MyName/Documents/STAT489/Project/Functions/Methods.R")
+model_output = myCoolFunction(data)
+# Wrong! Incorrect relative path, should be 
+# wrt top level repo
+source("Methods.R")
+model_output = myCoolFunction(data)
+```
+
+## Reproducibility problems
+
+Relative paths are with respect to the top level directory; the folder
+your `.Rproj` and `.gitignore` are in.
+
+```{r good_example_paths, eval=FALSE, echo=TRUE}
+source("Functions/Methods.R")
+model_output = myCoolFunction(data)
+```
+
+## Reproducibility problems
+
+You should not mix *definitions* with *invocations* in your code;
+function definitions should be ***side-effect free*** when sourced
+
+```{r bad_example_source, eval=FALSE, echo=TRUE}
+myCoolFunction = function(X) {
+  return(doneStuffWithX(X))
+}
+set.seed(07734)
+random_variable = myCoolFunction(1337)
+```
+
+The only effects of sourcing a function file should be that function's
+definition appearing in the environment
+
+```{r good_example_source, eval=FALSE, echo=TRUE}
+# contains nothing but def. of myCoolFunction
+source("Functions/Methods.R") 
+set.seed(07734)
+random_variable = myCoolFunction(1337)
+```
+
+## Reproducibility problems
+
+Tables and figures should be generated *automatically* in a script, not
+manually through the GUI
+
+![](manual_plot_save.png){fig-align="center"}
+
+## Reproducibility problems
+
+Instead, save automatically:
+
+```{r good_example_plot, eval=FALSE, echo=TRUE}
+# For base R plotting:
+png(filename = "Simulations/Figures/meaningful_name.png")
+plot(myAwesomeModel)
+dev.off()
+# For ggplot:
+my_cool_ggplot = ggplot(some_data)
+ggsave(filename = "Simulations/Figures/meaningful_name.png",
+       plot = my_cool_ggplot)
+```
+
+## Other problems
+
+-   Comment your code! You will forget what things do, it is for your
+    own benefit too
+
+-   Comments should be *meaningful*. Don't repeat verbatim, explain the
+    intent
+
+-   Ensure your variable names are purposeful. Don't call everything `x`
+    and `y`
+
+    ```{r example_comments, eval=FALSE, echo=TRUE}
+    # Bad comment:
+    # applies myCoolFunction to y
+    x = myCoolFunction(y) 
+    # Good comment:
+    # Creates a dataframe containing out-of-sample 
+    # observations to pass to the metric functions 
+    # for model validation
+    test_covariates = createTestSplit(full_covariates)
+    ```
+
+## Literature Review
+
+-   It is essential during research to understand what has come before
+
+\
+
+> "If I have seen further than others, it is by standing on the
+> shoulders of giants." - Isaac Newton
+
+-   Coordinate your efforts with your teammates!
+-   In-class: create Zotero groups
+-   Next week: Journal expectations
+-   Zotero can export `.bib` files that you can track using Git
+
+## Looking forward:
+
+Over the next few weeks we will discuss some models in context for your
+projects:
+
+-   Linear Models / Generalized Linear Models
+-   Geographically weighted regression
+-   Splines
+-   Gaussian Processes
+-   Random Forest / XGBoost
+-   Simple neural networks
+
+## Looking forward:
+
+Since all groups selected spatial style problems, I recommend the
+following book as a reference manual:
+
+[Handbook of Spatial Statistics](https://doi.org/10.1201/9781420072884);
+Gelfand, A.E., Diggle, P., Guttorp, P., & Fuentes, M. (Eds.). (2010).
+CRC Press.
+
+This goes far more in depth into many different subjects than we will be
+able to cover
+
+## Looking forward:
+
+-   More sources of good data:
+    -   <https://ephtracking.cdc.gov/>
+    -   <https://www.cdc.gov/places/index.html>
+    -   <https://www.huduser.gov/portal/pdrdatas_landing.html>
+-   Optionally: combine results across groups; up to you
