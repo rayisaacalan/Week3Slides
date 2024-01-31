@@ -229,3 +229,5 @@ sure to pull/push your changes *frequently*
     things
 -   Visual commits with highlighting is a nice feature, easy to stage
     changes
+
+## Organizing Simulations with Git
